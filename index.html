@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>cheerzdays-初めまして、また会おうね-</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #ffe8d6, #ffd1a1);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.container {
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(10px);
+  padding: 35px;
+  border-radius: 25px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+}
+
+h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  margin-bottom: 25px;
+  color: #333;
+}
+
+input[type="file"],
+input[type="text"] {
+  width: 100%;
+  padding: 14px;
+  margin: 10px 0;
+  border-radius: 15px;
+  border: 1px solid #eee;
+  font-size: 14px;
+  background: #fff;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 15px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 40px;
+  background: linear-gradient(90deg, #ffb347, #ffcc70);
+  color: #5a3e2b;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 20px rgba(255,179,71,0.3);
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(255,179,71,0.4);
+}
+
+canvas {
+  width: 100%;
+  margin-top: 25px;
+  border-radius: 20px;
+}
+
+.download-btn {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 12px 25px;
+  border-radius: 30px;
+  background: #333;
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>cheerzdays<br>初めまして、また会おうね</h2>
+
+<input type="file" id="upload">
+<input type="text" id="eventName" placeholder="イベント名を入力">
+
+<button onclick="generate()">画像を生成する</button>
+
+<canvas id="canvas"></canvas>
+
+<a id="download" class="download-btn" download="event.png">ダウンロード</a>
+
+</div>
+
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+function generate() {
+  const file = document.getElementById("upload").files[0];
+  if (!file) {
+    alert("画像を選択してください");
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function(e) {
+    const img = new Image();
+    img.onload = function() {
+
+      canvas.width = 1080;
+      canvas.height = 1080;
+
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.drawImage(img, 0, 0, 1080, 1080);
+
+      const frame = new Image();
+      frame.src = "frame.png";
+
+      frame.onload = function() {
+        ctx.drawImage(frame, 0, 0, 1080, 1080);
+
+        ctx.font = "bold 70px Playfair Display";
+        ctx.fillStyle = "#ffffff";
+        ctx.textAlign = "center";
+        ctx.shadowColor = "rgba(0,0,0,0.5)";
+        ctx.shadowBlur = 20;
+
+        ctx.fillText(
+          document.getElementById("eventName").value,
+          540,
+          1000
+        );
+
+        document.getElementById("download").href = canvas.toDataURL();
+      }
+    }
+    img.src = e.target.result;
+  }
+  reader.readAsDataURL(file);
+}
+</script>
+
+</body>
+</html>
